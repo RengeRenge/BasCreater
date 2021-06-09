@@ -31,6 +31,9 @@ class BasAnimate:
 
     def finish(self):
         print(f'{" then ".join(self.actions)}')
+        self.actions.clear()
+        self.attribute.clear()
+        self.count = 0
 
 
 def short_uuid():
