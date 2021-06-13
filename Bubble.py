@@ -1,7 +1,7 @@
 import Bas
 import random
 
-bubble = Bas.new_type("bub", {
+bubble = Bas.BasType({
     "content": "●",
     "color": "0x2dfffe",
     "y": "120%",
@@ -10,6 +10,7 @@ bubble = Bas.new_type("bub", {
     "textShadow": 0,
     "alpha": 0.4
 })
+
 
 def create_many(start_time, durtion_sum, group_count):
     durtion = 0
@@ -22,8 +23,8 @@ def create_many(start_time, durtion_sum, group_count):
             # x = random.randint(20, 85)
             x = random.randint(50, 85) if right else random.randint(10, 45)
             bubble_size = random.randint(6, 9)
-            bub = Bas.create_obj(type=bubble,
-                                 attribute={"x": f"{x}%", 'fontSize': f'{bubble_size}%'})
+            bub = Bas.BasObject(
+                bubble, {"x": f"{x}%", 'fontSize': f'{bubble_size}%'})
             animate.animate(obj=bub,
                             delay=start_time + durtion + random.uniform(0, 3),
                             duration=random.uniform(2, 2.5),
