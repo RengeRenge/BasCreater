@@ -11,7 +11,11 @@ uuidChars = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
              "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
              "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
 
-f = open('out/bas.txt', 'w+')
+def mkdir(path):
+    import os
+    path = path.strip().rstrip("\\")
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 
 def short_uuid():
@@ -208,3 +212,7 @@ class BasAnimate:
         self.actions.clear()
         self.attribute.clear()
         self.count = 0
+
+path = './out'
+mkdir(path)
+f = open(path + '/bas.txt', 'w+')
