@@ -7,13 +7,13 @@ fish = Bas.BasType({
     "x": "120%"
 })
 
-orangeFish = Bas.BasType.parseXML('./resource/orange_fish.svg')
-orangeWhiteFish = Bas.BasType.parseXML('./resource/orange_white_fish.xml')
+orangeFish = Bas.BasType.parseXML('./resource/orange_fish_left.svg')
+orangeWhiteFish = Bas.BasType.parseXML('./resource/orange_white_fish_left.svg')
 blueFish = Bas.BasType.parseXML('./resource/blue_fish.svg')
 squid = Bas.BasType.parseXML('./resource/squid.svg')
 squid_eye = Bas.BasType.parseXML('./resource/squid_eye.svg')
 octopus = Bas.BasType.parseXML('./resource/octopus.svg')
-red_fish = Bas.BasType.parseXML('./resource/red_fish.svg')
+red_fish = Bas.BasType.parseXML('./resource/red_fish_left.svg')
 long_fish = Bas.BasType.parseXML('./resource/long_fish.svg')
 long_fish1 = Bas.BasType.parseXML('./resource/long_fish1.svg')
 
