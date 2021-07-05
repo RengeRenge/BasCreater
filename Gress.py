@@ -1,4 +1,4 @@
-import Bas
+from lib import Bas
 import random
 
 gress = Bas.BasType({
@@ -26,9 +26,9 @@ def create_one(start_time, start_x):
     g2 = Bas.BasObject(gress, {"rotateZ": 2, "x": f"{start_x + 2}%"})
     g3 = Bas.BasObject(gress, {"rotateZ": 6, "x": f"{start_x + 4}%"})
 
-    g1a = Bas.BasAnimate().animate(g1, duration=start_time).animate(g1, duration=0, attribute={"alpha": 1})
-    g2a = Bas.BasAnimate().animate(g2, duration=start_time).animate(g2, duration=0, attribute={"alpha": 1})
-    g3a = Bas.BasAnimate().animate(g3, duration=start_time).animate(g3, duration=0, attribute={"alpha": 1})
+    g1a = Bas.BasAnimate().animate(g1, duration=start_time).animate(g1, duration=0.1, attribute={"alpha": 1})
+    g2a = Bas.BasAnimate().animate(g2, duration=start_time).animate(g2, duration=0.1, attribute={"alpha": 1})
+    g3a = Bas.BasAnimate().animate(g3, duration=start_time).animate(g3, duration=0.1, attribute={"alpha": 1})
 
     offsetX = 10 * animate_space
 

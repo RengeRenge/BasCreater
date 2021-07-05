@@ -1,4 +1,4 @@
-import Bas
+from lib import Bas
 import random
 
 fish = Bas.BasType({

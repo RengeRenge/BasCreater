@@ -11,6 +11,7 @@ uuidChars = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
              "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
              "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
 
+
 def mkdir(path):
     import os
     path = path.strip().rstrip("\\")
@@ -59,6 +60,28 @@ def read_bas():
     return f.read()
 
 
+def get_int(attribute, key):
+    number = attribute[key]
+    if isinstance(number, str):
+        n = re.findall(r'-?\d+\.?\d*', number)
+        if len(n) > 0:
+            n = n[0]
+            return int(n)
+    return int(number)
+
+
+def get_float(attribute, key):
+    number = attribute[key]
+    print(number)
+    if isinstance(number, str):
+        n = re.findall(r'-?\d+\.?\d*', number)
+        if len(n) > 0:
+            n = n[0]
+            print(n)
+            return float(n)
+    return float(number)
+
+
 class BasType:
     def __init__(self, attribute=None, obj_type="text", name=None, attributes=None) -> None:
         if attribute is None:
@@ -83,6 +106,12 @@ class BasType:
         f.write(def_text)
         print(def_text)
 
+    def get_int(self, key):
+        return get_int(self.attribute, key)
+
+    def get_float(self, key):
+        return get_float(self.attribute, key)
+
     @classmethod
     def parseXML(self, file, name=None):
         tree = ET.parse(file)
@@ -99,11 +128,11 @@ class BasType:
 
 
 class BasObject:
-    def __init__(self, type: BasType, attribute, id=None) -> None:
+    def __init__(self, type: BasType, attribute=None, id=None) -> None:
         if id is None:
             id = short_uuid()
         if attribute is None:
-            attribute = {}
+            attribute = {'alpha': 1}
         self.type = type
         self.attribute = attribute
         self.id = id
@@ -125,24 +154,10 @@ class BasObject:
         print(data)
 
     def get_int(self, key):
-        number = self.attribute[key]
-        if isinstance(number, str):
-            n = re.findall(r'-?\d+\.?\d*', number)
-            if len(n) > 0:
-                n = n[0]
-                return int(n)
-        return int(number)
+        return get_int(self.attribute, key)
 
     def get_float(self, key):
-        number = self.attribute[key]
-        print(number)
-        if isinstance(number, str):
-            n = re.findall(r'-?\d+\.?\d*', number)
-            if len(n) > 0:
-                n = n[0]
-                print(n)
-                return float(n)
-        return float(number)
+        return get_float(self.attribute, key)
 
 
 class BasGroup:
@@ -212,6 +227,7 @@ class BasAnimate:
         self.actions.clear()
         self.attribute.clear()
         self.count = 0
+
 
 path = './out'
 mkdir(path)
