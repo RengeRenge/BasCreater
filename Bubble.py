@@ -14,7 +14,7 @@ bubble = Bas.BasType({
 
 def create_many(start_time, duration_sum, group_count, x_min=None, x_max=None, y_end_base=-10, group_duration=3, bubble_duration=2, size_base=0, alpha_base=None, end_alpha=0):
     t = 0
-    while t < duration_sum + start_time:
+    while t < duration_sum:
         right = random.randint(0, 1)
         count = group_count
         while count >= 0:

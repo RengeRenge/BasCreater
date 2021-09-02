@@ -2,6 +2,7 @@ import uuid
 import re
 import collections
 import xml.etree.ElementTree as ET
+from svgpathtools import parse_path
 
 types = []
 quotation_marks_keys = ["content", "fontFamily", "d"]
@@ -50,9 +51,12 @@ def get_type(name):
     return None
 
 
-def set_string(id, duration=0, attribute=None):
+def set_string(id, duration=0, attribute=None, timeFunction=None):
     tab = "    "
-    return f'set {id} {{\n{string_of_attribute(attribute, tab=tab)}\n}} {duration}s'
+    str = f'set {id} {{\n{string_of_attribute(attribute, tab=tab)}\n}} {duration}s'
+    if timeFunction is not None:
+        return f'{str}, "{timeFunction}"'
+    return str
 
 
 def read_bas():
@@ -72,12 +76,10 @@ def get_int(attribute, key):
 
 def get_float(attribute, key):
     number = attribute[key]
-    print(number)
     if isinstance(number, str):
         n = re.findall(r'-?\d+\.?\d*', number)
         if len(n) > 0:
             n = n[0]
-            print(n)
             return float(n)
     return float(number)
 
@@ -104,7 +106,7 @@ class BasType:
     def __write(self, name, attribute, obj_type):
         def_text = f'def {obj_type} {name} {{\n{string_of_attribute(attribute, tab="    ")}\n}}\n'
         f.write(def_text)
-        print(def_text)
+        # print(def_text)
 
     def get_int(self, key):
         return get_int(self.attribute, key)
@@ -113,18 +115,58 @@ class BasType:
         return get_float(self.attribute, key)
 
     @classmethod
-    def parseXML(self, file, name=None):
+    def parseXML(self, file, name=None, offsetX=0, offsetY=0):
         tree = ET.parse(file)
         root = tree.getroot()
         attributes = []
         for path in root:
             if path.tag.endswith('path') and 'd' in path.attrib:
-                attribute = {'d': path.attrib["d"], "alpha": 0}
+                d = path.attrib["d"]
+                d = parse_path(d).translated(complex(offsetX, offsetY)).d()
+                attribute = {'d': d, "alpha": 0}
                 if 'fill' in path.attrib and len(path.attrib['fill']) > 0:
-                    fill = path.attrib['fill'].replace('#', '0x')
+                    fill = path.attrib['fill']
+                    if fill.startswith('#'):
+                        fill = fill.replace('#', '0x')
+                    elif fill.startswith('rgb('):
+                        fill = fill.replace('rgb(', '')
+                        fill = fill.replace(')', '')
+                        color_hex = '0x'
+                        for v in fill.split(','):
+                            color_hex += '{:02X}'.format(int(v))
+                        fill = color_hex
+                    if 'opacity' in path.attrib:
+                        opacity = path.attrib["opacity"]
+                        fill = BasType._colorCoverOn(fill, opacity, '0xFFFFFF')
+
                     attribute['fillColor'] = fill
                 attributes.append(attribute)
         return BasType(name=name, obj_type='path', attributes=attributes)
+
+    def _hex_to_rgb(hex):
+        hex = hex.replace('0x', '')
+        r = int(hex[0:2], 16)/255.0
+        g = int(hex[2:4], 16)/255.0
+        b = int(hex[4:6], 16)/255.0
+        return r, g, b
+
+    def _colorCoverOn(color, opacity, backgroundColor):
+        r1, g1, b1 = BasType._hex_to_rgb(backgroundColor)
+        a1 = 1
+
+        r2, g2, b2 = BasType._hex_to_rgb(color)
+        a2 = float(opacity)
+
+        r = BasType._blend_color(a1, a2, r1, r2)
+        g = BasType._blend_color(a1, a2, g1, g2)
+        b = BasType._blend_color(a1, a2, b1, b2)
+        color_hex = '0x'
+        for v in [r, g, b]:
+            color_hex += '{:02X}'.format(int(v*255))
+        return color_hex
+
+    def _blend_color(a1, a2, c1, c2):
+        return (c1 * a1 * (1.0 - a2) + c2 * a2) / (a1 + a2 - a1 * a2)
 
 
 class BasObject:
@@ -151,7 +193,7 @@ class BasObject:
     def __write(self, id, name, attribute):
         data = f'let {id} = {name}{{{string_of_attribute(attribute, sep=", ")}}}\n'
         f.write(data)
-        print(data)
+        # print(data)
 
     def get_int(self, key):
         return get_int(self.attribute, key)
@@ -169,7 +211,12 @@ class BasGroup:
 
 
 class BasAnimate:
-    def __init__(self, type: BasType = None, delay=0, duration=0, attribute=None) -> None:
+    liner = "linear"
+    easeInOut = "ease-in-out"
+    easeIn = "ease-in"
+    easeOut = "ease-out"
+
+    def __init__(self, type: BasType = None, delay=0, duration=0, attribute=None, timeFunction=None) -> None:
         self.count = 0
         self.attribute = {}
 
@@ -181,49 +228,49 @@ class BasAnimate:
         if type is not None:
             obj = BasObject(type)
             self.animate(obj, delay=delay, duration=duration,
-                         attribute=attribute)
+                         attribute=attribute, timeFunction=timeFunction)
 
-    def animate(self, obj: BasObject, delay=0, duration=0, attribute=None):
+    def animate(self, obj: BasObject, delay=0, duration=0, attribute=None, timeFunction=None):
         self.count += 1
         self.obj = obj
-        self.__animate_many(obj, delay, duration, attribute)
+        self.__animate_many(obj, delay, duration, attribute, timeFunction)
         if attribute is not None:
             self.attribute.update(attribute)
             obj.attribute.update(attribute)
         return self
 
-    def animate_g(self, group: BasGroup, delay=0, duration=0, attribute=None):
+    def animate_g(self, group: BasGroup, delay=0, duration=0, attribute=None, timeFunction=None):
         self.count += 1
         self.group = group
 
         for obj in group.objs:
-            self.__animate_many(obj, delay, duration, attribute)
+            self.__animate_many(obj, delay, duration, attribute, timeFunction)
 
         if attribute is not None:
             self.attribute.update(attribute)
             group.attribute.update(attribute)
         return self
 
-    def __animate_many(self, obj: BasObject, delay=0, duration=0, attribute=None):
+    def __animate_many(self, obj: BasObject, delay=0, duration=0, attribute=None, timeFunction=None):
         if obj.ids is not None and len(obj.ids) > 0:
             for id in obj.ids:
-                self.__animate(id, delay, duration, attribute)
+                self.__animate(id, delay, duration, attribute, timeFunction)
         else:
-            self.__animate(obj.id, delay, duration, attribute)
+            self.__animate(obj.id, delay, duration, attribute, timeFunction)
 
-    def __animate(self, id: str, delay=0, duration=0, attribute=None):
+    def __animate(self, id: str, delay=0, duration=0, attribute=None, timeFunction=None):
         actions = self.actions
         if id not in actions:
             actions[id] = []
         if delay > 0:
-            actions[id].append(set_string(id, delay, {}))
-        actions[id].append(set_string(id, duration, attribute))
+            actions[id].append(set_string(id, delay, {}, timeFunction))
+        actions[id].append(set_string(id, duration, attribute, timeFunction))
 
     def finish(self):
         for id, value in self.actions.items():
             data = f'{" then ".join(value)}\n'
             f.write(data)
-            print(data)
+            # print(data)
         self.actions.clear()
         self.attribute.clear()
         self.count = 0
@@ -231,4 +278,4 @@ class BasAnimate:
 
 path = './out'
 mkdir(path)
-f = open(path + '/bas.txt', 'w+')
+f = open(path + '/bas.txt', 'w+', encoding='utf-8')

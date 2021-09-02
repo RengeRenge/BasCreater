@@ -1,14 +1,9 @@
 import random
 import pyperclip
+from MyAnimate import *
 from lib import Bas
-from gui import app
 
 durtion_sum = 4*60 + 34
-
-
-def bubble(duration):
-    import Bubble
-    Bubble.create_many(0, duration, 10)
 
 
 def t0(duration):
@@ -76,78 +71,104 @@ def t0(duration):
 
 
 def t6(duration):
-    import Bubble
-    Bubble.create_many(0, duration, 10)
+    bubble(duration)
 
 
 def t16():
     blueFish = Bas.BasType.parseXML('./resource/blue_fish.svg')
-    create_many(blueFish, 0, 120, base_y=40, y_offset_min=-
-                5, y_offset_max=10, count=10, duration=8)
+    fish_many(blueFish, 0, 120, base_y=40, y_offset_min=-
+              5, y_offset_max=10, count=11, duration=8)
     bubble(16)
 
 
 def t32():
     blueFish = Bas.BasType.parseXML('./resource/blue_fish.svg')
-    create_many(blueFish, 0, 120, base_y=40, y_offset_min=-10,
-                y_offset_max=-4, count=8, duration=4, beforeDelay=0.5)
+    fish_many(blueFish, 0, 120, base_y=40, y_offset_min=-10,
+              y_offset_max=-4, count=9, duration=4, beforeDelay=0.5)
     bubble(10)
 
 
-def t40():
-    orangeFish = Bas.BasType.parseXML('./resource/orange_white_fish_left.svg')
-    create_many(orangeFish, 0, 120, base_y=60,
-                count=8, duration=8, beforeDelay=1.5)
+def t41():
+    orangeFish = Bas.BasType.parseXML('./resource/red_fish_left.svg')
+    count = 9
+    delay = 0
+    beforeDelay = 1
+    index = 0
+    durtion = 8
+    scale = 0.06
+    end_x = -20 * scale * 10
+    while index < count:
+        delay = random.uniform(delay, delay+beforeDelay)
+        delay = max(0, delay)
+        s = delay
+
+        start_x = 120 + index
+        sum_l = start_x - end_x
+        v = sum_l/durtion
+
+        d = 8 - s
+        l = d * v
+        fish_one(orangeFish,
+                 start_time=s,
+                 start_x=start_x,
+                 base_y=60 + random.uniform(-20, 20),
+                 y_offset_min=-10,
+                 y_offset_max=5,
+                 duration=d,
+                 scale=scale,
+                 end_x=start_x-l
+                 )
+        index += 1
+        print("end_x", start_x-l, "start_x", start_x,
+              "start_time", s, "duration", d)
     bubble(9)
 
 
-def t49():
+def t47_5():
     import Bubble
     import Gress
 
-    Bubble.create_many(
-        start_time=0,
-        duration_sum=1,
-        group_count=10,
-        x_min=-20,
-        x_max=70,
-        y_end_base=-20,
-        group_duration=0.6,
-        bubble_duration=0.6,
-        size_base=0,
-        alpha_base=1,
-        end_alpha=0.6
-    )
+    fish = Bas.BasType.parseXML(
+        './resource/purple_fish_left.svg', offsetX=-350, offsetY=-350)
 
-    Bubble.create_many(
-        start_time=0.3,
-        duration_sum=1,
-        group_count=10,
-        x_min=-20,
-        x_max=90,
-        y_end_base=-20,
-        group_duration=0.6,
-        bubble_duration=0.6,
-        size_base=0,
-        alpha_base=1,
-        end_alpha=0.6
-    )
     delay = 1.5
     bubble_duration = 0.6
 
     g_delay = bubble_duration + delay
-    Gress.create_one(start_time=g_delay + 0.4, start_x=20)
-    Gress.create_one(start_time=g_delay + 0.6, start_x=40)
-    Gress.create_one(start_time=g_delay + 0.8, start_x=60)
-    Gress.create_one(start_time=g_delay + 1.0, start_x=80)
+
+    swim_quick(fish, start_time=6, duration=8, start_x=120,
+               base_y=30, sectorColor='0x6A5ACD', sectorBorder=False)
+    # fish_many(fish, 4, 120, base_y=10,
+    #           count=1, duration=8, beforeDelay=1.5, scale=0.3)
+
+    Gress.create_one(start_time=g_delay + 0.4, start_x=20, end_x=-20,
+                     colors=['0x063D53', '0x057ABD'], included_angle=[-5, 3])
+    Gress.create_one(start_time=g_delay + 0.6, start_x=45, end_x=-20,
+                     colors=['0x006DAF', '0x058AD4', '0x1288A8'], included_angle=[-5, 0, 8])
+    Gress.create_one(start_time=g_delay + 0.8, start_x=70, end_x=-20,
+                     colors=['0x008ACE', '0x26BAD0'], included_angle=[-2, 5])
+    Gress.create_one(start_time=g_delay + 1.0, start_x=95, end_x=-20,
+                     colors=['0x018A86', '0x028E83', '0x024E28'], included_angle=[-6, 0, 4])
+    Gress.create_one(start_time=g_delay + 1.2, start_x=120, end_x=-20,
+                     colors=['0x077B43', '0x39A12F'], included_angle=[-4, 0, 2])
+
+    # 需要提前消失
+    Gress.create_one(start_time=g_delay + 1.4, start_x=145, end_x=20,
+                     colors=['0x32A03C', '0x3D7233'], included_angle=[-7, 0])
+    Gress.create_one(start_time=g_delay + 1.6, start_x=170, end_x=40,
+                     colors=['0xF0D719', '0xFEC70B', '0xF8D04B'], included_angle=[-4, 1, 5])
+    Gress.create_one(start_time=g_delay + 1.8, start_x=195, end_x=60,
+                     colors=['0xED9801', '0xEE8C8F'], included_angle=[0, 6])
+    Gress.create_one(start_time=g_delay + 2.0, start_x=220, end_x=80,
+                     colors=['0xEE4823', '0xEE4823'], included_angle=[-4, 3])
 
     Bubble.create_many(
-        start_time=delay,
-        duration_sum=2,
-        group_count=60,
+        start_time=0,
+        duration_sum=delay,
+        group_count=30,
         x_min=-20,
         x_max=90,
-        y_end_base=-20,
+        y_end_base=-30,
         group_duration=bubble_duration,
         bubble_duration=bubble_duration,
         size_base=0,
@@ -156,12 +177,51 @@ def t49():
     )
 
     Bubble.create_many(
-        start_time=delay + 0.3,
-        duration_sum=1,
-        group_count=60,
+        start_time=delay,
+        duration_sum=bubble_duration*3,
+        group_count=80,
         x_min=-20,
         x_max=90,
-        y_end_base=-20,
+        y_end_base=-30,
+        group_duration=bubble_duration,
+        bubble_duration=bubble_duration,
+        size_base=10,
+        alpha_base=1,
+        end_alpha=0.6
+    )
+    bubble(10, 6)
+
+
+def t63():
+    import Bubble
+    bubble_duration = 0.6
+
+    blueFish = Bas.BasType.parseXML(
+        './resource/white_blue_fish.svg', offsetX=-300, offsetY=-550)
+    swim_rush(blueFish, start_time=1 + bubble_duration*2.5,
+              sectorColor="0x05498F", sectorBorder=False, base_y=80, scale=0.5)
+
+    Bubble.create_many(
+        start_time=0,
+        duration_sum=1.5,
+        group_count=10,
+        x_min=-20,
+        x_max=90,
+        y_end_base=-30,
+        group_duration=bubble_duration,
+        bubble_duration=bubble_duration,
+        size_base=0,
+        alpha_base=1,
+        end_alpha=0.6
+    )
+
+    Bubble.create_many(
+        start_time=2,
+        duration_sum=bubble_duration*3,
+        group_count=80,
+        x_min=-20,
+        x_max=90,
+        y_end_base=-30,
         group_duration=bubble_duration,
         bubble_duration=bubble_duration,
         size_base=10,
@@ -170,44 +230,81 @@ def t49():
     )
 
 
-def create_many(type: Bas.BasType, start_time, start_x, base_y=40, y_offset_min=-10, y_offset_max=5, count=10, duration=8.0, beforeDelay=1):
-    delay = 0
+def t70():
+    orangeFish = Bas.BasType.parseXML(
+        './resource/orange_white_fish_left_no_sector.svg', offsetX=-350, offsetY=-300)
+    swim_rush(orangeFish, start_time=0,
+              sectorColor="0xFF9640", base_y=45)
+
+    orangeFish = Bas.BasType.parseXML(
+        './resource/orange_white_fish_left_no_sector_yellow.svg', offsetX=-350, offsetY=-300)
+    swim_rush(orangeFish, start_time=2.3,
+              sectorColor="0xECB915", base_y=75, scale=0.55)
+
+    fish = Bas.BasType.parseXML(
+        './resource/long_fish.svg', offsetX=-135, offsetY=-170)
+    swim_quick(fish, 7, 9, 120, 20, '0x734F4D', scale=0.4, sectorScale=0.5, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
+    swim_quick(fish, 8, 9, 120, 25, '0x734F4D', scale=0.4, sectorScale=0.5, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
+    swim_quick(fish, 8, 10, 120, 15, '0x734F4D', scale=0.4, sectorScale=0.5, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
+
+    # orangeFish = Bas.BasType.parseXML(
+    #     './resource/团鱼.svg', offsetX=-150, offsetY=-200)
+    # swim_quick(orangeFish, start_time=9, duration=8, start_x=120,
+    #           sectorColor="0xFF9640", sectorScale=0.3, sectorBorder=False, base_y=45)
+
+    orangeFish = Bas.BasType.parseXML(
+        './resource/团鱼.svg', offsetX=-150, offsetY=-200)
+    swim_rush(orangeFish, start_time=8.5,
+              sectorColor="0xFF9640", sectorScale=0.6, sectorBorder=False, base_y=70, scale=0.9)
+    bubble(9)
+
+
+def t79():
+    fish = Bas.BasType.parseXML(
+        './resource/long_fish_purple.svg', offsetX=-135, offsetY=-170)
+
+    count = 12
     while count >= 0:
-        delay = random.uniform(delay, delay+beforeDelay)
-        delay = max(0, delay)
-        create_one(type,
-                   start_time=start_time + random.uniform(0, delay),
-                   start_x=start_x + count,
-                   base_y=base_y + random.uniform(-20, 20),
-                   y_offset_min=y_offset_min,
-                   y_offset_max=y_offset_max,
-                   duration=duration)
+        swim_quick(fish, 
+        start_time=5 + random.uniform(0, 2),
+        duration=8 + random.uniform(0, 2),
+        start_x=120, 
+        base_y=25 + random.uniform(-10, 10),
+        sectorColor='0xBD95BC', 
+        scale=0.2, sectorScale=0.25, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
         count -= 1
 
+    fish = Bas.BasType.parseXML(
+        './resource/带鱼.svg', offsetX=-135, offsetY=-170)
+    swim_rush(fish, 4, 90, '0x000000', sectorBorder=False, sectorScale=0, scale=1.4)
 
-def create_one(type: Bas.BasType, start_time, start_x, base_y, y_offset_min, y_offset_max, duration):
-    if base_y is None:
-        base_y = random.uniform(10, 90)
-    attr = {"x": f"{start_x}%", "y": f"{base_y}%", "alpha": 1, 'scale': 0.1}
-    fish = None
-    fish = Bas.BasObject(type, attr)
+    bubble(9)
 
-    animate = Bas.BasAnimate().animate(
-        fish, duration=start_time
-    )
 
-    change_count = random.randint(1, 3)
-    x = start_x
-    l = start_x - -20.0
-    offset = 1.0 * l / change_count
+def t88():
 
-    while fish.get_float('x') > -20:
-        x = fish.get_float('x')
-        y = fish.get_float('y')
-        animate.animate(
-            fish, duration=duration/change_count, attribute={"x": f"{x - offset}%", "y": f"{y + random.uniform(y_offset_min, y_offset_max)}%"}
-        )
-    animate.finish()
+    orangeFish = Bas.BasType.parseXML(
+        './resource/orange_fish_left.svg', offsetX=-350, offsetY=-300)
+    swim_rush(orangeFish, start_time=0, sectorBorder=0,
+              sectorColor="0xFF8931", base_y=20, offsetY=0)
+
+    # blueFish = Bas.BasType.parseXML('./resource/blue_fish.svg')
+    # fish_many(blueFish, 0, 120, base_y=30, y_offset_min=-
+    #           5, y_offset_max=10, count=11, duration=10)
+    bubble(16)
+
+# t0(6)
+# t6(10)
+# t16()
+# t32()
+# t41()
+# t47_5()
+# t63()
+# t70()
+# t79()
+t88()
+
+pyperclip.copy(Bas.read_bas())
 
 
 def demo():
@@ -244,14 +341,4 @@ def demo():
     # Bubble.create_many(start_time=0, durtion_sum=durtion_sum, group_count=10)
 
     pyperclip.copy(Bas.read_bas())
-
-
 # app.run()
-# t0(6)
-# t6(10)
-# t16()
-# t32()
-# t40()
-t49()
-
-pyperclip.copy(Bas.read_bas())
