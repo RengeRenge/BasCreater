@@ -120,11 +120,12 @@ def swim_rush(type: Bas.BasType, start_time, base_y, sectorColor, sectorBorder=T
     float_v_y = rush_v_y
 
     while fish.get_float('x') > end_x:
+        y_enable = random.randint(1, 10) > 5
         x = fish.get_float('x')
         att = {
             "x": f"{x - rush_offset}%",
         }
-        if offsetY > 0:
+        if offsetY > 0 and y_enable:
             att["y"] = f"{fish.get_float('y') + rush_offset_y}%"
 
         animate.animate(
@@ -137,7 +138,7 @@ def swim_rush(type: Bas.BasType, start_time, base_y, sectorColor, sectorBorder=T
             att = {
                 "x": f"{x - rush_offset}%", "rotateZ": 80
             }
-            if offsetY > 0:
+            if offsetY > 0 and y_enable:
                 att["y"] = f"{sectorObj.get_float('y') + rush_offset_y}%"
 
             sectorAni.animate(
@@ -151,7 +152,7 @@ def swim_rush(type: Bas.BasType, start_time, base_y, sectorColor, sectorBorder=T
         att = {
             "x": f"{x - float_duration * float_v}%",
         }
-        if offsetY > 0:
+        if offsetY > 0 and y_enable:
             att["y"] = f"{fish.get_float('y') + float_duration * float_v_y}%"
 
         animate.animate(
@@ -164,7 +165,7 @@ def swim_rush(type: Bas.BasType, start_time, base_y, sectorColor, sectorBorder=T
             att = {
                 "x": f"{x - float_duration * float_v}%", "rotateZ": 110
             }
-            if offsetY > 0:
+            if offsetY > 0 and y_enable:
                 att["y"] = f"{sectorObj.get_float('y') + float_duration * float_v_y}%"
 
             sectorAni.animate(

@@ -243,9 +243,12 @@ def t70():
 
     fish = Bas.BasType.parseXML(
         './resource/long_fish.svg', offsetX=-135, offsetY=-170)
-    swim_quick(fish, 7, 9, 120, 20, '0x734F4D', scale=0.4, sectorScale=0.5, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
-    swim_quick(fish, 8, 9, 120, 25, '0x734F4D', scale=0.4, sectorScale=0.5, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
-    swim_quick(fish, 8, 10, 120, 15, '0x734F4D', scale=0.4, sectorScale=0.5, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
+    swim_quick(fish, 7, 9, 120, 20, '0x734F4D', scale=0.4, sectorScale=0.5,
+               sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
+    swim_quick(fish, 8, 9, 120, 25, '0x734F4D', scale=0.4, sectorScale=0.5,
+               sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
+    swim_quick(fish, 8, 10, 120, 15, '0x734F4D', scale=0.4, sectorScale=0.5,
+               sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
 
     # orangeFish = Bas.BasType.parseXML(
     #     './resource/团鱼.svg', offsetX=-150, offsetY=-200)
@@ -265,18 +268,19 @@ def t79():
 
     count = 12
     while count >= 0:
-        swim_quick(fish, 
-        start_time=5 + random.uniform(0, 2),
-        duration=8 + random.uniform(0, 2),
-        start_x=120, 
-        base_y=25 + random.uniform(-10, 10),
-        sectorColor='0xBD95BC', 
-        scale=0.2, sectorScale=0.25, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
+        swim_quick(fish,
+                   start_time=5 + random.uniform(0, 2),
+                   duration=8 + random.uniform(0, 2),
+                   start_x=120,
+                   base_y=25 + random.uniform(-10, 10),
+                   sectorColor='0xBD95BC',
+                   scale=0.2, sectorScale=0.25, sectorBorder=False, sectorRorateX=180, sectorRorateZMin=30, sectorRorateZMax=60)
         count -= 1
 
     fish = Bas.BasType.parseXML(
         './resource/带鱼.svg', offsetX=-135, offsetY=-170)
-    swim_rush(fish, 4, 90, '0x000000', sectorBorder=False, sectorScale=0, scale=1.4)
+    swim_rush(fish, 4, 90, '0x000000', sectorBorder=False,
+              sectorScale=0, scale=1.4)
 
     bubble(9)
 
@@ -285,13 +289,28 @@ def t88():
 
     orangeFish = Bas.BasType.parseXML(
         './resource/orange_fish_left.svg', offsetX=-350, offsetY=-300)
-    swim_rush(orangeFish, start_time=0, sectorBorder=0,
-              sectorColor="0xFF8931", base_y=20, offsetY=0)
+    swim_rush(orangeFish, start_time=0.5, sectorBorder=0,
+              sectorColor="0xFF8931", base_y=20, offsetY=20)
 
-    # blueFish = Bas.BasType.parseXML('./resource/blue_fish.svg')
-    # fish_many(blueFish, 0, 120, base_y=30, y_offset_min=-
-    #           5, y_offset_max=10, count=11, duration=10)
-    bubble(16)
+    blueFish = Bas.BasType.parseXML('./resource/blue_fish.svg')
+    fish_many(blueFish, 3, 120, base_y=30, y_offset_min=-
+              5, y_offset_max=10, count=11, duration=10)
+    bubble(13)
+
+
+def t101():
+    bubble(18)
+
+
+def t119():
+    blueFish = Bas.BasType.parseXML('./resource/blue_fish.svg')
+    fish_many(blueFish, 0, 120, base_y=40, y_offset_min=-
+              5, y_offset_max=10, count=11, duration=8)
+    orangeFish = Bas.BasType.parseXML('./resource/red_fish_left.svg')
+    fish_many(orangeFish, 6, 120, base_y=60, y_offset_min=-
+              5, y_offset_max=10, count=11, duration=8, scale=0.06)
+    bubble(14)
+
 
 # t0(6)
 # t6(10)
@@ -302,7 +321,10 @@ def t88():
 # t63()
 # t70()
 # t79()
-t88()
+# t88()
+# t101()
+t119()
+
 
 pyperclip.copy(Bas.read_bas())
 
