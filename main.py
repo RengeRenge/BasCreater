@@ -311,6 +311,15 @@ def t119():
               5, y_offset_max=10, count=11, duration=8, scale=0.06)
     bubble(14)
 
+def t133():
+    blueFish = Bas.BasType.parseXML('./resource/dark_blue.svg')
+    fish_many(blueFish, 0, 120, base_y=40, y_offset_min=-
+              5, y_offset_max=10, count=11, duration=8)
+    orangeFish = Bas.BasType.parseXML('./resource/dark_blue_white.svg')
+    fish_many(orangeFish, 6, 120, base_y=60, y_offset_min=-
+              5, y_offset_max=10, count=11, duration=8, scale=0.06)
+    bubble(14)
+
 
 # t0(6)
 # t6(10)
@@ -323,7 +332,8 @@ def t119():
 # t79()
 # t88()
 # t101()
-t119()
+# t119()
+t133()
 
 
 pyperclip.copy(Bas.read_bas())
